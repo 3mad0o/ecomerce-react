@@ -74,7 +74,7 @@ export const ListProduct = () => {
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
-    debugTable: true,
+    debugTable: false,
     onSortingChange: setSorting,
     manualSorting: true,
     enableMultiSort: true,
