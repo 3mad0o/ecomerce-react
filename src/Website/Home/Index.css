@@ -1,0 +1,16 @@
+.slider_item{
+    max-height: 500px !important;
+}
+.slider_item img{
+    width: 100%;
+    object-fit: cover;
+}
+
+.swiper-pagination-bullet {
+    background: #fff !important;
+}
+
+.swiper-pagination-bullet-active {
+    background: red !important;
+}
+
