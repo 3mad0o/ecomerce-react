@@ -9,8 +9,8 @@ import { Home } from './Website/Home/Home';
 import { ProductView } from './Website/ProductView';
 import { CartView } from './Website/CartView';
 import { Dashboard } from './Admin/Dashboard';
-import { CreateProduct } from './Admin/Product/CreateProduct';
 import { ListProduct } from './Admin/Product/ListProduct';
+import { CreateProduct } from './Admin/Product/CreateProduct';
 
 
 function App() {

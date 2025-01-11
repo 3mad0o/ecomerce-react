@@ -5,7 +5,8 @@ const FileInputWithPreview = ({
   register, 
   name, 
   errors, 
-  existingUrl = null // For edit mode
+  existingUrl = null ,// For edit mode,
+  setValue,
 }) => {
   const [preview, setPreview] = useState(existingUrl);
 
@@ -22,6 +23,7 @@ const FileInputWithPreview = ({
     setPreview(null);
     // Optionally clear the file input as well
     document.getElementById(name).value = null;
+    // setValue(`${name}_remove`,1)
   };
 
   useEffect(() => {
@@ -39,6 +41,7 @@ const FileInputWithPreview = ({
           {...register(name, {
             onChange: handleFileChange, // React Hook Form's onChange
           })}
+          
           className="block w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600"
         />
       </div>

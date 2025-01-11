@@ -5,3 +5,7 @@
 a.group{
     color: #fff;
 }
+
+.react-select-custom__control{
+    padding: 7px;
+}
