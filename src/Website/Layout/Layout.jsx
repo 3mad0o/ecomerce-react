@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useLayoutEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Header } from './Header'
 import { Outlet } from 'react-router-dom'
 import { Banner } from './Banner'
-import { useState } from 'react';
 import {WebsiteContext, WebsiteProvider} from '../Contexts/WebsiteContext'
 import { CartView } from '../CartView';
 import LoadingSpinner from '../Componenets/Loading';

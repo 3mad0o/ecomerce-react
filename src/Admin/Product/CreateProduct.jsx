@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -50,6 +50,8 @@ export const CreateProduct = () => {
   let [colors, setColors] = useState([])
   let [categories, setCategories] = useState([])
   const [showVariantTable, setShowVariantTable] = useState(false)
+  const formRef =useRef();
+
 
   const GetInitData = () => {
     axiosClient.get('admin/product/create')
@@ -69,17 +71,71 @@ export const CreateProduct = () => {
     console.log("Form Data on Error:", getValues());  // Log the form values even if they are invalid
   }
 
+  const appendToFormData = (formData, data, parentKey = "") => {
+    if (data instanceof FileList || data instanceof Blob) {
+      // Handle FileList or single Blob
+      formData.append(parentKey, data[0]);
+    } else if (Array.isArray(data)) {
+      // Handle arrays
+      data.forEach((value, index) => {
+        const key = parentKey ? `${parentKey}[${index}]` : index;
+        appendToFormData(formData, value, key);
+      });
+    } else if (typeof data === "object" && data !== null) {
+      // Handle nested objects
+      Object.entries(data).forEach(([key, value]) => {
+        const newKey = parentKey ? `${parentKey}[${key}]` : key;
+        appendToFormData(formData, value, newKey);
+      });
+    } else {
+      // Handle primitive values
+      formData.append(parentKey, data);
+    }
+  };
+
   const onSubmit = (data) => {
-      console.log(data);
-      
+    const formDataObject = new FormData();
 
-    axiosClient.post('admin/product',data)
-    .then((response) => {
-      console.log(response);
-    })
-    console.log(data)
-  }
 
+    appendToFormData(formDataObject, data);
+
+  
+    // Add all fields from the dynamic formData
+    // Object.entries(data).forEach(([key, value]) => {
+    //   if (value instanceof Array) {
+    //     value.forEach((item) => formDataObject.append(`${key}[]`, item));
+    //   } else if (value instanceof FileList || value instanceof Blob) {
+    //     formDataObject.append(key, value[0]);
+    //   } else {
+    //     formDataObject.append(key, value);
+    //   }
+    // });
+  
+    // // Add variants
+    // getValues('variants').forEach((variant, index) => {
+    //   Object.entries(variant).forEach(([key, value]) => {
+    //     if (value instanceof FileList || value instanceof Blob) {
+    //       formDataObject.append(`variants[${index}][${key}]`, value[0]);
+    //     } else {
+    //       formDataObject.append(`variants[${index}][${key}]`, value);
+    //     }      });
+    // });
+  
+    // Make the API request
+    axiosClient
+      .post('admin/product', formDataObject, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then((response) => {
+        console.log('Product created successfully:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error creating product:', error.response?.data || error.message);
+      });
+  
+    console.log('Submitted Data:', data);
+  };
+  
   const generateVariants = () => {
     let sizes =getValues('size');
     let colors =getValues('color');
@@ -110,7 +166,7 @@ export const CreateProduct = () => {
       <h2 className="text-2xl font-semibold text-center mb-6">Create New Product</h2>
       
 
-      <form onSubmit={handleSubmit(onSubmit, onError)} className=" grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <form ref={formRef} onSubmit={handleSubmit(onSubmit, onError)} className=" grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Product Name */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Product Name</label>
@@ -224,7 +280,7 @@ export const CreateProduct = () => {
             register={register}
             setValue={setValue}
             errors={errors}
-            existingUrl={"http://127.0.0.1:8001/storage/test/BestrOCkfxfCm1xhrGy0bZASqJc68bjWPUBeaRXj.png"} // Replace with existing URL if editing
+            existingUrl={""} // Replace with existing URL if editing
           />
           {errors.mainImage && <p className="mt-1 text-xs text-red-500">{errors.mainImage.message}</p>}
         </div>
