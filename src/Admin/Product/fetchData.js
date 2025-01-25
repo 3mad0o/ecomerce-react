@@ -11,7 +11,7 @@ export const fetchData = async (options, sorting) => {
   
 
   try {
-    const response = await axios.get('http://127.0.0.1:8001/products', {
+    const response = await axios.get('http://127.0.0.1:8000/api/admin/product', {
       params: {
         length: pageSize, // Map `pageSize` to `length`
         start: pageIndex * pageSize, // Map `pageIndex` to `start` and adjust accordingly

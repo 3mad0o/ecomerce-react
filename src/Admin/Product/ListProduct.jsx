@@ -24,6 +24,22 @@ export const ListProduct = () => {
         
       },
       {
+        cell: ({ row }) => {
+          let mainImage = row.original.main_image;
+
+          if(mainImage){
+            return <ImageComponent mainImage={mainImage}  />;
+          }else{
+            return "No Image"
+          }
+      },
+     
+        id: 'main_image',
+        header: () => 'main Image',
+        footer: (props) => props.column.id,
+        
+      },
+      {
         accessorFn: (row) => row.name,
         id: 'name',
         cell: (info) => info.getValue(),
@@ -31,9 +47,38 @@ export const ListProduct = () => {
         footer: (props) => props.column.id,
         
       },
+
+      
       {
-        accessorKey: 'email',
-        header: () => 'Email',
+        accessorKey: 'category.name',
+        header: () => 'Category',
+        footer: (props) => props.column.id,
+        
+      },
+
+       {
+        accessorFn: row => {
+          let variants = row.variants;
+          let sizes = variants.map(variant => variant.size).join(", ");
+          return sizes;
+        },
+        id: 'sizes',
+        header: () => 'Sizes',
+        footer: (props) => props.column.id,
+        
+      },
+
+
+      
+
+      {
+        cell: ({ row }) => {
+          let variants = row.original.variants;
+          return <ColorsComponent variants={variants}  />;
+      },
+     
+        id: 'colors',
+        header: () => 'colors',
         footer: (props) => props.column.id,
         
       },
@@ -212,5 +257,32 @@ export const ListProduct = () => {
         </button>
       </div>
     </>
+  );
+};
+
+
+const ColorsComponent = ({ variants }) => {
+  return (
+    <div>
+      {variants.map((variant, index) => (
+        <div
+          key={index}
+          className='rounded-full'
+          style={{ background: variant.color.hex_code, width: '25px', height: '25px' }}
+        ></div>
+      ))}
+    </div>
+  );
+};
+
+const ImageComponent = ({ mainImage }) => {
+  return (
+        <img
+          className='rounded-full'
+          key={mainImage.id}
+          style={{  width: '75px', height: '75px' }}
+          src={mainImage.full_path}
+        />
+     
   );
 };
